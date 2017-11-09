@@ -1,0 +1,7 @@
+[package]
+name = "telegramutils"
+version = "0.1.0"
+authors = ["Vadim Polulyakh <bavadim@gmail.com>"]
+
+[dependencies]
+telegram-bot = { git = "https://github.com/White-Oak/telegram-bot.git" }
