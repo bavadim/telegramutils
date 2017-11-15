@@ -10,14 +10,11 @@ import (
 func main() {
 	errl := log.New(os.Stderr, "ERROR: ", 0)
 	warnl := log.New(os.Stderr, "WARNING: ", 0)
-	infol := log.New(os.Stdout, "INFO: ", 0)
 
 	bot, err := tgbotapi.NewBotAPI(os.Getenv("TELEGRAM_TOKEN"))
 	if err != nil {
 		errl.Panic(err)
 	}
-
-	infol.Printf("Authorized on account %s", bot.Self.UserName)
 
 	for {
 		var chatId int64

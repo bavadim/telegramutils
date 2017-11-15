@@ -1,11 +1,9 @@
 #!/bin/sh
 
-pushd .
-cd tin
+cd ./tin
 go install
-popd
+cd ..
 
-pushd .
-cd tout
+cd ./tout
 go install
-popd
+cd ..
