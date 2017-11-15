@@ -10,38 +10,58 @@ import (
 	"io"
 )
 
+func split(buf string, lim int) []string {
+	var chunk string
+	chunks := make([]string, 0, len(buf)/lim+1)
+	for len(buf) >= lim {
+		chunk, buf = buf[:lim], buf[lim:]
+		chunks = append(chunks, chunk)
+	}
+	if len(buf) > 0 {
+		chunks = append(chunks, buf[:len(buf)])
+	}
+	return chunks
+}
+
+func send(chatId int64, text string, warnl *log.Logger, bot *tgbotapi.BotAPI) {
+  const maxSize = 4096
+
+  for _, m := range split(text, maxSize) {
+    msg := tgbotapi.NewMessage(chatId, m)
+    _, err := bot.Send(msg)
+    if err != nil {
+      warnl.Println("Can't to send message.", err)
+      break
+    }
+  }
+}
+
 func main() {
-	errl := log.New(os.Stderr, "ERROR: ", 0)
-	warnl := log.New(os.Stderr, "WARNING: ", 0)
+  errl := log.New(os.Stderr, "ERROR: ", 0)
+  warnl := log.New(os.Stderr, "WARNING: ", 0)
 
-	bot, err := tgbotapi.NewBotAPI(os.Getenv("TELEGRAM_TOKEN"))
-	if err != nil {
-		errl.Panic(err)
-	}
+  bot, err := tgbotapi.NewBotAPI(os.Getenv("TELEGRAM_TOKEN"))
+  if err != nil {
+    errl.Panic(err)
+  }
 
-	reader := bufio.NewReader(os.Stdin)
-	r := csv.NewReader(reader)
-	for {
-		record, err := r.Read()
-		if err == io.EOF {
-			break
-		}
-		if err != nil || len(record) != 2 {
-			warnl.Println("Input must have csv format ([chatId, text]).", err)
-			continue
-		}
-		chatId, err := strconv.ParseInt(record[0], 10, 64)
-		if err != nil {
-			warnl.Println("ChatId must be integer.", err)
-			continue
-		}
-		text := record[1]
-		warnl.Println(text)
-		msg := tgbotapi.NewMessage(chatId, text)
-		_, err = bot.Send(msg)
-		if err != nil {
-			warnl.Println("Can't to send message.", err)
-			continue
-		}
-	}
+  reader := bufio.NewReader(os.Stdin)
+  r := csv.NewReader(reader)
+  for {
+    record, err := r.Read()
+    if err == io.EOF {
+      break
+    }
+    if err != nil || len(record) != 2 {
+      warnl.Println("Input must have csv format ([chatId, text]).", err)
+      continue
+    }
+    chatId, err := strconv.ParseInt(record[0], 10, 64)
+    if err != nil {
+      warnl.Println("ChatId must be integer.", err)
+      continue
+    }
+    text := record[1]
+    send(chatId, text, warnl, bot)
+  }
 }

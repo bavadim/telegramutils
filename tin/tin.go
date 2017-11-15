@@ -21,6 +21,9 @@ func main() {
 	u.Timeout = 60
 
 	updates, err := bot.GetUpdatesChan(u)
+	if err != nil {
+		errl.Panic(err)
+	}
 	w := csv.NewWriter(os.Stdout)
 	w.UseCRLF = false
 
