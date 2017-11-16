@@ -10,17 +10,18 @@ import (
 	"io"
 )
 
-func split(buf string, lim int) []string {
-	var chunk string
+func split(str string, lim int) []string {
+	buf := []rune(str)
+	var chunk []rune
 	chunks := make([]string, 0, len(buf)/lim+1)
 	for len(buf) >= lim {
 		chunk, buf = buf[:lim], buf[lim:]
-		chunks = append(chunks, chunk)
+		chunks = append(chunks, string(chunk))
 	}
 	if len(buf) > 0 {
-		chunks = append(chunks, buf[:len(buf)])
+		chunks = append(chunks, string(buf[:len(buf)]))
 	}
-	return chunks
+	return []string(chunks)
 }
 
 func send(chatId int64, text string, warnl *log.Logger, bot *tgbotapi.BotAPI) {
