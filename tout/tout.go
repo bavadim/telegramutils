@@ -29,7 +29,7 @@ func send(chatId int64, text string, warnl *log.Logger, bot *tgbotapi.BotAPI) {
 
   for _, m := range split(text, maxSize) {
     msg := tgbotapi.NewMessage(chatId, m)
-    msg.ParseMode = tgbotapi.ModeMarkdown
+    //msg.ParseMode = tgbotapi.ModeMarkdown
     _, err := bot.Send(msg)
     if err != nil {
       warnl.Println("Can't to send message.", err)
