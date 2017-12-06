@@ -8,6 +8,7 @@ import (
 	"bufio"
 	"strconv"
 	"io"
+	"flag"
 )
 
 func split(str string, lim int) []string {
@@ -24,12 +25,14 @@ func split(str string, lim int) []string {
 	return []string(chunks)
 }
 
-func send(chatId int64, text string, warnl *log.Logger, bot *tgbotapi.BotAPI) {
+func send(chatId int64, text string, warnl *log.Logger, bot *tgbotapi.BotAPI, mdSupport bool) {
   const maxSize = 4096
 
   for _, m := range split(text, maxSize) {
     msg := tgbotapi.NewMessage(chatId, m)
-    //msg.ParseMode = tgbotapi.ModeMarkdown
+    if mdSupport == true {
+    	msg.ParseMode = tgbotapi.ModeMarkdown
+    }
     _, err := bot.Send(msg)
     if err != nil {
       warnl.Println("Can't to send message.", err)
@@ -46,6 +49,9 @@ func main() {
   if err != nil {
     errl.Panic(err)
   }
+
+  isMarkdownPtr := flag.Bool("m", false, "markdawn support")
+  flag.Parse()
 
   reader := bufio.NewReader(os.Stdin)
   r := csv.NewReader(reader)
@@ -64,6 +70,6 @@ func main() {
       continue
     }
     text := record[1]
-    send(chatId, text, warnl, bot)
+    send(chatId, text, warnl, bot, *isMarkdownPtr)
   }
 }
