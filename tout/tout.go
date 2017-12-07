@@ -25,13 +25,25 @@ func split(str string, lim int) []string {
 	return []string(chunks)
 }
 
-func send(chatId int64, text string, warnl *log.Logger, bot *tgbotapi.BotAPI, mdSupport bool) {
+func send(chatId int64,
+          text string,
+          buttons tgbotapi.ReplyKeyboardMarkup,
+          warnl *log.Logger,
+          bot *tgbotapi.BotAPI,
+          mdSupport bool) {
   const maxSize = 4096
 
-  for _, m := range split(text, maxSize) {
+  chunks := split(text, maxSize)
+  lastIndex := len(chunks) - 1
+  for i, m := range chunks {
     msg := tgbotapi.NewMessage(chatId, m)
     if mdSupport == true {
-    	msg.ParseMode = tgbotapi.ModeMarkdown
+      msg.ParseMode = tgbotapi.ModeMarkdown
+    }
+    if i == lastIndex && len(buttons.Keyboard) > 0 {
+      msg.ReplyMarkup = buttons
+    } else {
+      msg.ReplyMarkup = tgbotapi.NewRemoveKeyboard(false)
     }
     _, err := bot.Send(msg)
     if err != nil {
@@ -60,8 +72,8 @@ func main() {
     if err == io.EOF {
       break
     }
-    if err != nil || len(record) != 2 {
-      warnl.Println("Input must have csv format ([chatId, text]).", err)
+    if err != nil || len(record) != 5 {
+      warnl.Println("Input must have csv format, for example: chatId,text,button1,button2,button3.", err)
       continue
     }
     chatId, err := strconv.ParseInt(record[0], 10, 64)
@@ -70,6 +82,17 @@ func main() {
       continue
     }
     text := record[1]
-    send(chatId, text, warnl, bot, *isMarkdownPtr)
+
+    buttons := make([][]tgbotapi.KeyboardButton, 3)
+    k := 0
+    for i := 2; i < 5; i++ {
+      if record[i] != "" {
+        buttons[k] = tgbotapi.NewKeyboardButtonRow(tgbotapi.NewKeyboardButton(record[i]))
+        k++
+      }
+    }
+    buttons = buttons[0:k]
+
+    send(chatId, text, tgbotapi.NewReplyKeyboard(buttons...), warnl, bot, *isMarkdownPtr)
   }
 }
