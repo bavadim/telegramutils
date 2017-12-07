@@ -9,6 +9,10 @@ This project inspired by linux utils. There are two simple programs in this repo
 
 The project is written on GO so you must have a customized GO environment. Clone this repo and run `install.sh`. After that, `tin` and `tout` appear in the `{GOPATH}/bin`.
 
+For tout.go :
+
+go get "github.com/go-telegram-bot-api/telegram-bot-api"
+
 ## Usage
 
 You mast have a telegram token in `TELEGRAM_TOKEN` env variable before you start using the bot. This is example echo bot:
