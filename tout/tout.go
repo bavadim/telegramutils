@@ -2,7 +2,8 @@ package main
 
 import (
 	"log"
-	"github.com/go-telegram-bot-api/telegram-bot-api"
+	//"github.com/go-telegram-bot-api/telegram-bot-api"
+	"gopkg.in/telegram-bot-api.v4"
 	"os"
 	"encoding/csv"
 	"bufio"
@@ -60,16 +61,58 @@ func main() {
     if err == io.EOF {
       break
     }
-    if err != nil || len(record) != 2 {
-      warnl.Println("Input must have csv format ([chatId, text]).", err)
-      continue
-    }
+	  
     chatId, err := strconv.ParseInt(record[0], 10, 64)
     if err != nil {
       warnl.Println("ChatId must be integer.", err)
       continue
     }
-    text := record[1]
-    send(chatId, text, warnl, bot, *isMarkdownPtr)
+	  
+    if err != nil || len(record) == 2 {
+	    text := record[1]
+           send(chatId, text, warnl, bot, *isMarkdownPtr)
+    }
+
+    if err != nil || len(record) == 3 {
+	    text := record[1]
+  	    tbtn1 := record[2]
+	    msg := tgbotapi.NewMessage(chatId, text)
+            msg.ReplyMarkup = tgbotapi.NewReplyKeyboard(
+	                              tgbotapi.NewKeyboardButtonRow(
+		                               tgbotapi.NewKeyboardButton(tbtn1),		               		               
+                                                ),
+                                       )
+		bot.Send(msg)
+    }
+	
+    if err != nil || len(record) == 4 {
+	    text := record[1]
+            tbtn1 := record[2]	
+	    tbtn2 := record[3]			
+	    msg := tgbotapi.NewMessage(chatId, text)
+            msg.ReplyMarkup = tgbotapi.NewReplyKeyboard(
+	                               tgbotapi.NewKeyboardButtonRow(
+		                                tgbotapi.NewKeyboardButton(tbtn1),
+		                                tgbotapi.NewKeyboardButton(tbtn2),		               
+                                        ),
+                                     )
+		bot.Send(msg)
+	}
+	
+	if err != nil || len(record) == 5 {
+	        text := record[1]	
+                tbtn1 := record[2]	
+	        tbtn2 := record[3]	
+                tbtn3 := record[4]		
+		msg := tgbotapi.NewMessage(chatId, text)
+                msg.ReplyMarkup = tgbotapi.NewReplyKeyboard(
+	        tgbotapi.NewKeyboardButtonRow(
+		               tgbotapi.NewKeyboardButton(tbtn1),
+		               tgbotapi.NewKeyboardButton(tbtn2),
+		               tgbotapi.NewKeyboardButton(tbtn3),
+                         	),
+                          )
+		bot.Send(msg)
+	}
   }
 }
