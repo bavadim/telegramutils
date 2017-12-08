@@ -11,6 +11,14 @@ import (
 	"flag"
 )
 
+func sendFile(chatId int64, url string, filename string, bot *tgbotapi.BotAPI){
+                f, _ := os.Open(url)		 				  
+	        reader := tgbotapi.FileReader{Name: filename, Reader: f, Size: -1}                
+		msg := tgbotapi.NewDocumentUpload(chatId, reader)			
+		bot.Send(msg)	           	  
+	        f.Close()	
+}
+
 func split(str string, lim int) []string {
 	buf := []rune(str)
 	var chunk []rune
