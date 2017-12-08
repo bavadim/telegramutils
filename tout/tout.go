@@ -72,7 +72,7 @@ func main() {
     if err == io.EOF {
       break
     }
-    if err != nil || len(record) != 5 {
+    if err != nil || len(record) != 6 {
       warnl.Println("Input must have csv format, for example: chatId,text,button1,button2,button3.", err)
       continue
     }
@@ -85,7 +85,7 @@ func main() {
 
     buttons := make([][]tgbotapi.KeyboardButton, 3)
     k := 0
-    for i := 2; i < 5; i++ {
+    for i := 3; i < 6; i++ {
       if record[i] != "" {
         buttons[k] = tgbotapi.NewKeyboardButtonRow(tgbotapi.NewKeyboardButton(record[i]))
         k++
@@ -94,5 +94,21 @@ func main() {
     buttons = buttons[0:k]
 
     send(chatId, text, tgbotapi.NewReplyKeyboard(buttons...), warnl, bot, *isMarkdownPtr)
+
+    if record[2] != "" {
+      f, err := os.Open(record[2])
+      if err != nil {
+        warnl.Println("bad file path.", err)
+        continue
+      }
+      reader := tgbotapi.FileReader{ Name: record[2], Reader: f, Size: -1 }
+      f_msg := tgbotapi.NewDocumentUpload(chatId, reader)
+      _, err = bot.Send(f_msg)
+      if err != nil {
+        warnl.Println("Can't to send file.", err)
+        break
+      }
+      f.Close()
+    }
   }
 }
