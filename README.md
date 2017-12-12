@@ -16,8 +16,8 @@ The project is written on GO so you must have a customized GO environment for as
 You mast have a telegram token in `TELEGRAM_TOKEN` env variable before you start using the bot. This is example echo bot:
 
 ```
-	export TELEGRAM_TOKEN=<my token> 
-	tin | tout
+export TELEGRAM_TOKEN=<my token> 
+tin | tout
 ```
 
 This is example simple python echo bot.
@@ -41,7 +41,7 @@ for row in csv.reader(iter(sys.stdin.readline, '')):
 
 In command line:
 ```
-	export TELEGRAM_TOKEN=<my token>
-	tin | python3 ./bot.py | tout
+export TELEGRAM_TOKEN=<my token>
+tin | python3 ./bot.py | tout
 ```
 	
