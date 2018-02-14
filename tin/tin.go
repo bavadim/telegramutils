@@ -32,14 +32,11 @@ func main() {
 			continue
 		}
 
-		var data [7]string
+		var data [4]string
 		data[0] = strconv.FormatInt(update.Message.Chat.ID, 10)
     data[1] = strconv.Itoa(update.Message.From.ID)
-		data[2] = update.Message.Text
-    data[3] = ""
-    data[4] = ""
-    data[5] = ""
-    data[6] = ""
+    data[2] = update.Message.From.UserName
+		data[3] = update.Message.Text
 		if err := w.Write(data[:]); err != nil {
 			warnl.Println("error writing record to csv:", err)
 		}
