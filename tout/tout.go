@@ -72,7 +72,7 @@ func main() {
     if err == io.EOF {
       break
     }
-    if err != nil || len(record) != 7 {
+    if err != nil || len(record) != 6 {
       warnl.Println("Input must have csv format, for example: chatId,senderId,text,button1,button2,button3.", err)
       continue
     }
@@ -81,17 +81,12 @@ func main() {
       warnl.Println("ChatId must be integer.", err)
       continue
     }
-    _, err = strconv.ParseInt(record[1], 10, 64)
-    if err != nil {
-      warnl.Println("UserId must be integer.", err)
-      continue
-    }
 
-    text := record[2]
+    text := record[1]
 
     buttons := make([][]tgbotapi.KeyboardButton, 3)
     k := 0
-    for i := 4; i < 7; i++ {
+    for i := 3; i < 6; i++ {
       if record[i] != "" {
         buttons[k] = tgbotapi.NewKeyboardButtonRow(tgbotapi.NewKeyboardButton(record[i]))
         k++
@@ -101,7 +96,7 @@ func main() {
 
     send(chatId, text, tgbotapi.NewReplyKeyboard(buttons...), warnl, bot, *isMarkdownPtr)
 
-    if record[3] != "" {
+    if record[2] != "" {
       f, err := os.Open(record[3])
       if err != nil {
         warnl.Println("bad file path.", err)
