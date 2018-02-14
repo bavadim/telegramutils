@@ -73,7 +73,7 @@ func main() {
       break
     }
     if err != nil || len(record) != 6 {
-      warnl.Println("Input must have csv format, for example: chatId,senderId,text,button1,button2,button3.", err)
+      warnl.Println("Input must have csv format, for example: chatId,text,file,button1,button2,button3.", err)
       continue
     }
     chatId, err := strconv.ParseInt(record[0], 10, 64)
