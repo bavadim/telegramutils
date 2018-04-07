@@ -2,10 +2,11 @@ package main
 
 import (
 	"log"
-	"github.com/go-telegram-bot-api/telegram-bot-api"
 	"os"
 	"encoding/csv"
 	"strconv"
+
+	"github.com/go-telegram-bot-api/telegram-bot-api"
 )
 
 func main() {
@@ -34,11 +35,11 @@ func main() {
 
 		var data [4]string
 		data[0] = strconv.FormatInt(update.Message.Chat.ID, 10)
-    data[1] = strconv.Itoa(update.Message.From.ID)
-    data[2] = update.Message.From.UserName
+		data[1] = strconv.Itoa(update.Message.From.ID)
+		data[2] = update.Message.From.UserName
 		data[3] = update.Message.Text
 		if err := w.Write(data[:]); err != nil {
-			warnl.Println("error writing record to csv:", err)
+			warnl.Println("Failed to write message", err)
 		}
 
 		w.Flush()
