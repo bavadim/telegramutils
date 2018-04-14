@@ -11,7 +11,7 @@ import (
 func main() {
 	errl := log.New(os.Stderr, "ERROR: ", 0)
 	warnl := log.New(os.Stderr, "WARNING: ", 0)
-	bot, err := tgbotapi.NewBotAPI("567524377:AAHfNjID00ESGRJ4vodDA05-gDmmcvY1mYM")
+	bot, err := tgbotapi.NewBotAPI(os.Getenv("TELEGRAM_TOKEN"))
 	if err != nil {
 		errl.Panic(err)
 	}
